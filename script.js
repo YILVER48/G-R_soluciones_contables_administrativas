@@ -361,7 +361,6 @@ function buildWhatsAppMessage(data) {
       const bodyId   = btn.getAttribute('aria-controls');
       const body     = $(`#${bodyId}`);
       if (!body) return;
-
       if (expanded) {
         btn.setAttribute('aria-expanded', 'false');
         body.hidden = true;
@@ -369,6 +368,31 @@ function buildWhatsAppMessage(data) {
         btn.setAttribute('aria-expanded', 'true');
         body.hidden = false;
       }
+    });
+  });
+})();
+
+/* ════════════════════════════════════════════════════════════
+   8c. PLANES CARRUSEL — actualiza dots al hacer scroll
+   ════════════════════════════════════════════════════════════ */
+(function initPlansDots() {
+  const grid = $('.plans__grid');
+  const dots = $$('.plans__dot');
+  if (!grid || !dots.length) return;
+
+  const updateDots = () => {
+    const index = Math.round(grid.scrollLeft / grid.offsetWidth * dots.length);
+    const active = Math.min(index, dots.length - 1);
+    dots.forEach((d, i) => d.classList.toggle('plans__dot--active', i === active));
+  };
+
+  grid.addEventListener('scroll', updateDots, { passive: true });
+
+  // Hacer clic en un dot desplaza al plan correspondiente
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      const planWidth = grid.querySelector('.plan')?.offsetWidth + 16 || 0;
+      grid.scrollTo({ left: planWidth * i, behavior: 'smooth' });
     });
   });
 })();
